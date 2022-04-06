@@ -15,8 +15,9 @@ export default function Layout({children, pagina}) {
         </aside>
 
         <main className="md:w-8/12 xl:w-3/4 2xl:w-4/5 h-screen overflow-y-scroll">
-            <h2>Contenido Aquí</h2>
+          <div className="p-10">
             {children}
+          </div>
         </main>
       </div>
     </>
