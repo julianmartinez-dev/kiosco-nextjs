@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext } from 'react';
 import axios from 'axios';
 import { toast, Toast } from 'react-toastify';
+import { useRouter } from 'next/router';
 
 const KioscoContext = createContext();
 
@@ -10,6 +11,9 @@ const KioscoProvider = ({ children }) => {
   const [productoSeleccionado, setProductoSeleccionado] = useState({});
   const [modal, setModal] = useState(false);
   const [pedido, setPedido] = useState([]);
+  const [nombre, setNombre] = useState('');
+
+  const router = useRouter()
 
   const obtenerCategorias = async () => {
     const { data } = await axios('/api/categorias');
@@ -27,6 +31,7 @@ const KioscoProvider = ({ children }) => {
   const handleClickCategoria = (id) => {
     const categoria = categorias.filter((cat) => cat.id === id);
     setCategoriaActual(categoria[0]);
+    router.push('/')
   };
 
   const handleProductoSeleccionado = (producto) => {
@@ -37,8 +42,20 @@ const KioscoProvider = ({ children }) => {
     setModal(!modal);
   };
 
+  const handleEditarCantidades = id =>{
+    const pedidoActualiar = pedido.filter( producto => producto.id === id);
+    console.log(pedidoActualiar);
+    setProductoSeleccionado(pedidoActualiar[0]);
+    setModal(!modal);
+  }
 
-  const handleAgregarPedido = ({ categoriaId, imagen, ...producto }) => {
+  const handleEliminarProducto = id =>{
+    const pedidoActualizado = pedido.filter( producto => producto.id !== id)
+    setPedido(pedidoActualizado);
+  }
+
+
+  const handleAgregarPedido = ({ categoriaId, ...producto }) => {
     if (pedido.some((p) => p.id === producto.id)) {
       //Si el producto ya existe actualizamos la cantidad
       const pedidoActualizado = pedido.map((p) =>
@@ -65,6 +82,10 @@ const KioscoProvider = ({ children }) => {
         handleChangeModal,
         pedido,
         handleAgregarPedido,
+        handleEditarCantidades,
+        handleEliminarProducto,
+        setNombre,
+        nombre
       }}
     >
       {children}
