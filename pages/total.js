@@ -1,9 +1,12 @@
 import { useEffect, useCallback } from 'react';
 import useKiosco from '../hooks/useKiosco';
 import Layout from '../layout/Layout';
+import { formatearPrecio } from '../helpers';
+
+
 export default function Total() {
 
-  const { pedido, nombre, setNombre } = useKiosco()
+  const { pedido, nombre, setNombre, colocarOrden, total } = useKiosco()
 
   const comprobarPedido = useCallback(() => {
     return pedido.length === 0 || nombre === '' || nombre < 3;
@@ -13,10 +16,6 @@ export default function Total() {
     comprobarPedido();
   },[pedido,nombre, comprobarPedido]);
 
-  const colocarOrden = (e) => {
-    e.preventDefault()
-    console.log('Orden enviada');
-  }
 
   return (
     <Layout pagina="Total y Confirmar Pedido">
@@ -42,7 +41,7 @@ export default function Total() {
 
         <div className="mt-10">
           <p className="text-2xl">
-            Total a pagar: <span className="font-bold">200</span>
+            Total a pagar: <span className="font-bold">{formatearPrecio(total)}</span>
           </p>
         </div>
 
